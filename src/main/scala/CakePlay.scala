@@ -12,12 +12,20 @@ object CakePlay extends App {
     def queueName : String 
   }
   
+  trait BusinessLogicComponent {
+    val businessLogic : BusinessLogic
+  }
+  
+  trait BusinessLogic {
+    def doStuff
+  }
+  
   /*
    * Application
    */ 
   
   trait Service {
-    this : JmsConfigComponent =>
+    this : BusinessLogicComponent with JmsConfigComponent =>
     
     protected def initialise = {
       println(s"Initialised service with config ${jmsConfig}")
@@ -25,6 +33,11 @@ object CakePlay extends App {
     
     def publishMessage = {
       println(s"About to publish to ${jmsConfig.queueName}")
+    }
+    
+    def runService = {
+      businessLogic.doStuff
+      publishMessage 
     }
   }
   
@@ -47,11 +60,22 @@ object CakePlay extends App {
     }
   } 
   
-  val myServiceComponent = new Service with JmsConfigComponent {
+  trait FooBusinessLogicComponent extends BusinessLogicComponent {
+    val businessLogic = new BusinessLogic {
+      println("Creating business logic")
+      
+      override def doStuff = {
+        println("doing stuff")
+      }
+    }
+  } 
+  
+  
+  val myServiceComponent = new Service with JmsConfigComponent with FooBusinessLogicComponent {
     val jmsConfig = SingleJmsConfigComponent.jmsConfig
     initialise
   }
   
-  myServiceComponent.publishMessage
-  myServiceComponent.publishMessage
-}
+  myServiceComponent.runService
+  myServiceComponent.runService
+}	

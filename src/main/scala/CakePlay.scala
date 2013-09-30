@@ -13,7 +13,7 @@ object CakePlay extends App {
   }
   
   trait BusinessLogicComponent {
-    val businessLogic : BusinessLogic
+    def businessLogic : BusinessLogic
   }
   
   trait BusinessLogic {

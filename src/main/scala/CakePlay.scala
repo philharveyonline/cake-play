@@ -18,6 +18,11 @@ object CakePlay extends App {
   
   trait Service {
     this : JmsConfigComponent =>
+    
+    protected def initialise = {
+      println(s"Initialised service with config ${jmsConfig}")
+    }
+    
     def publishMessage = {
       println(s"About to publish to ${jmsConfig.queueName}")
     }
@@ -37,12 +42,14 @@ object CakePlay extends App {
     lazy val jmsConfig = new JmsConfig {
       println("Created single JMS config")
       
+      
       def queueName = "singletonQueueName"
     }
   } 
   
   val myServiceComponent = new Service with JmsConfigComponent {
     val jmsConfig = SingleJmsConfigComponent.jmsConfig
+    initialise
   }
   
   myServiceComponent.publishMessage

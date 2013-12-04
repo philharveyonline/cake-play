@@ -19,6 +19,7 @@ object ComponentRegistry
   private val persistingBusinessLogic = new PersistingBusinessLogic
 
   override def businessLogic = {
+    // illustrate what happens when the businessLogic method is called
     println(s"Returning $persistingBusinessLogic")
     persistingBusinessLogic
   }
